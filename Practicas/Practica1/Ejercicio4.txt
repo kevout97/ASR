@@ -1,0 +1,9 @@
+Descargar y analizar el script sample.py del repositorio de github https://github.com/dratani/Practica1.
+Consultar la documentación oficial https://oss.oetiker.ch/rrdtool/ y describir las funciones create,
+update, dump, fetch y graph. Ejecutar el script y mostrar el resultado.
+
+Respuesta:
+    Create: Crear una base de datos de Round Robin
+    Dump:   Mapear una base de datos de round robin a xml.
+    Fetch:  Obtener datos de una base de datos de round robin.
+    Graph:  Crear una gráfica basada en uno o más RRDs.

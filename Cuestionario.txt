@@ -1,0 +1,10 @@
+1) ¿Cuál es el objetivo del comando getCmd?
+2) ¿Qué representa el parámetro snmpEngine y escribe los valores que acepta?
+3) ¿Para qué sirve el parámetro transportTarget?
+4) ¿Cuál es la función del parámetro contextData?
+5) Describe el parámetro varBinds
+Ahora, analiza los datos de salida del comando getCmd y responde.
+6) ¿Para qué sirve el campo errorIndication?, escribe su tipo de dato.
+7) ¿Qué información proporciona errorStatus?, escribe su tipo de dato.
+8) ¿Cuál es la función de errorIndex?, escribe su tipo de dato.
+9) ¿Cuál es el objetivo de varBinds?, escribe su tipo de dato.

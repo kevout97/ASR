@@ -1,17 +1,17 @@
 """
-SNMPv1
-++++++
+SNMPv2c
++++++++
 
 Send SNMP GET request using the following options:
 
-  * with SNMPv1, community 'SNMPcom'
-  * over IPv4/UDP
-  * to an Agent at localhost
-  * for two instances of 1.3.6.1.2.1.1.6.0 MIB object,
+* with SNMPv2c, community 'SNMPcom'
+* over IPv4/UDP
+* to an Agent at localhost
+* for two OIDs in string form 
 
 Functionally similar to:
 
-| $ snmpget -v1 -c SNMPcom localhost 1.3.6.1.2.1.1.6.0 
+| $ snmpget -v2c -c SNMPcom localhost 1.3.6.1.2.1.1.1.0 1.3.6.1.2.1.1.6.0
 
 """#
 from pysnmp.hlapi import *
@@ -21,6 +21,7 @@ errorIndication, errorStatus, errorIndex, varBinds = next(
            CommunityData('private', mpModel=0),
            UdpTransportTarget(('localhost', 161)),
            ContextData(),
+           ObjectType(ObjectIdentity('1.3.6.1.2.1.1.1.0')),
            ObjectType(ObjectIdentity('1.3.6.1.2.1.1.6.0')))
 )
 

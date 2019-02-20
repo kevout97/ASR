@@ -1,9 +1,0 @@
-Descargar el archivo v2c-get.py del repositorio de github https://github.com/dratani/Practica1, explicar
-las diferencias entre la implementación de la versión uno (v1-get.py) y la versión 2 (v2c-get.py)
-Modificar el script v2c-get.py, colocar la información de alguno de los agentes que configuró en
-sesiones anteriores. Ejecutar el script y mostrar el resultado.
-
-Respuesta:
-    En el parámetro CommunityData después de indicar la comunidad existe otro argumento 'mpModel' el cuál permite indicar la versión de SNMP que se está usando.
-    mpModel=0 => SNMPv1
-    mpModel=1 => SNMPv2c

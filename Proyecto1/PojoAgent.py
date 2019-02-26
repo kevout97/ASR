@@ -7,7 +7,7 @@ class PojoAgent:
         self.db = DBClass(host,user,passwd,database)
     
     def insertAgent(self,hostname,version_snmp,port_snmp,community,status,ip,version_so,interfaces,last_reboot,mac,info_admin)
-        query = "INSERT INTO agents (hostname,version_snmp,port_snmp,community,status) VALUES ('" + hostname + "','" + version_snmp + "'," + port_snmp +",'" + community +"','"+ status +"')"
+        query = "INSERT INTO agents (hostname,version_snmp,port_snmp,community,status) VALUES ('" + hostname + "','" + version_snmp + "'," + port_snmp +",'" + community +"','"+ status +"',UNIX_TIMESTAMP(NOW()))"
         self.db.insertUpdateDelete(query)
         query = "INSERT INTO devices (hostname,ip,version_so,interfaces,last_reboot,mac,info_admin) VALUES ('"+ hostname +"','"+ ip +"','"+ version_so +"',"+ interfaces +",'"+ last_reboot +"','"+ mac +"','"+ info_admin +"')"
         self.db.insertUpdateDelete(query)

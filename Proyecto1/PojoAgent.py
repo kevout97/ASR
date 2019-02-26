@@ -1,4 +1,5 @@
 from DataBaseMysql import DBClass
+import os
 class PojoAgent:
     private db
 
@@ -14,6 +15,11 @@ class PojoAgent:
     def getAllAgentsDevices(self):
         query = "SELECT agents.hostname,version_snmp,port_snmp,community,ip,version_so,interfaces,last_reboot,mac,info_admin FROM agents, devices WHERE agents.hostname=devices.hostname"
         return self.db.executeSelect(query)
+    
+    def getStart(self,hostname):
+        query = "SELECT initial_time FROM agents WHERE hostname='"+ hostname +"'"
+        result = self.db.executeSelect(query)
+        return result[0][0]
     
     def getAllHosts(self):
         query = "SELECT hostname FROM agents"
@@ -35,6 +41,11 @@ class PojoAgent:
 
     def getCommunity(self,hostname):
         query = "SELECT community FROM agents WHERE hostname='" + hostname + "'"
+        result = self.db.executeSelect(query)
+        return result[0][0]
+    
+    def getIP(self,hostname):
+        query = "SELECT ip FROM devices WHERE hostname='" + hostname + "'"
         result = self.db.executeSelect(query)
         return result[0][0]
 
@@ -66,11 +77,14 @@ class PojoAgent:
     def closeConnection(self):
         self.db.closeConnection()
     
-    def deleteAgent(self,hostname,ip):
+    def deleteAgent(self,hostname):
         query = "DELETE FROM agents WHERE hostname='"+ hostname +"'"
         self.db.insertUpdateDelete(query)
         query = "DELETE FROM devices WHERE hostname='"+ hostname +"' AND ip='" + ip + "'"
         self.db.insertUpdateDelete(query)
+        query = "DELETE FROM interfaces WHERE hostname='"+ hostname +"'"
+        self.db.insertUpdateDelete(query)
+        os.system("rm -f "+ hostname +".rrd")
     
     def setStatus(self,hostname,status):
         query = "UPDATE agents SET status='"+ status +"' WHERE hostname='"+ hostname +"'"

@@ -16,8 +16,8 @@ class PojoAgent:
         query = "SELECT agents.hostname,version_snmp,port_snmp,community,ip,version_so,interfaces,last_reboot,mac,info_admin FROM agents, devices WHERE agents.hostname=devices.hostname"
         return self.db.executeSelect(query)
     
-    def getStart(self,hostname):
-        query = "SELECT initial_time FROM agents WHERE hostname='"+ hostname +"'"
+    def getStart(self,ip):
+        query = "SELECT agents.initial_time FROM agents, devices WHERE agents.hostname=devices.hostname AND devices.ip='"+ ip +"'"
         result = self.db.executeSelect(query)
         return result[0][0]
     

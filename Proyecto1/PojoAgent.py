@@ -27,7 +27,7 @@ class PojoAgent:
         return self.db.executeSelect(query)
     
     def getIndex(self,ip):
-        query = "SELECT agents.index FROM agents, devices WHERE agents.hostname=devices.hostname AND devices.ip='"+ ip +"'"
+        query = "SELECT agents.indice FROM agents, devices WHERE agents.hostname=devices.hostname AND devices.ip='"+ ip +"'"
         result = self.db.executeSelect(query)
         return result[0][0]
     

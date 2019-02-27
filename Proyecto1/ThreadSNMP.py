@@ -30,6 +30,7 @@ class ThreadSNMP:
                 mainDBRRD.insert(in_network_interface,out_network_interface,in_icmp,out_icmp,in_tcp,out_tcp,in_udp,out_udp,in_ping,out_ping)
                 time.sleep(1)
             else:
+                mainPojo.setStatus(str(hostname),"down")
                 print("")
                 break
 

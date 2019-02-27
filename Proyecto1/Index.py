@@ -27,8 +27,11 @@ def dispositivosRegistrados(flag):
                 pa.setStatus(str(hosts[i][0]),"down")
     
     for i in range(0,len(hosts)):
+        ip = str(pa.getIP(str(hosts[i][0])))
+        status = str(pa.getStatus(str(ip)))
         print("Dispositivo: "+ str(i+1))
         print("Hostname: "+ str(hosts[i][0]))
+        print("Status: "+ str(status))
         print("Numero de Interfaces: "+str(pa.getInterfaces(str(hosts[i][0]),pa.getIP(str(hosts[i][0])))))
         print("###############################################################################") 
 def menu(flag):

@@ -1,7 +1,7 @@
 import rrdtool
 
 class DataBaseRRDTOOL:
-    name
+    name = None
     def __init__(self,name):
         self.name = name
 

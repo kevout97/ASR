@@ -5,17 +5,16 @@ from SNMP import SNMP
 from ThreadSNMP import ThreadSNMP
 
 def dispositivosRegistrados():
+    print("Dispositivos")
 
- 
 def menu():
-    os.system('clear')
-    dispositivosRegistrados()
-    print ("Menu Graficas")
-    print ("\t1 - Agregar Agente")
-    print ("\t2 - Eliminar Agente")
-    print ("\t3 - Estado de Dispositivo")
-    print ("\t4 - Graficas")
-    print ("\tq - Salir")
+    os.system("clear")
+    print("Menu Graficas")
+    print("\t1 - Agregar Agente")
+    print("\t2 - Eliminar Agente")
+    print("\t3 - Estado de Dispositivo")
+    print("\t4 - Graficas")
+    print("\tq - Salir")
 
 def menuGraficas():
     os.system('clear')
@@ -85,7 +84,7 @@ def agregarAgente():
 
         oid = "1.3.6.1.2.1.1.4.0" #Oid para obtener informacion del administrador
         info_admin = snmp.get(str(community),int(version_snmp),str(hostname),str(port_snmp),str(oid))
-        
+
         pa.insertAgent(str(hostname),str(version_snmp),port_snmp,str(community),str(status),str(ip),str(version_so),int(interfaces),str(last_reboot),str(mac),str(info_admin))
         thread = ThreadSNMP()
         thread.startMonitoring(str(ip),paux,str(index))
@@ -136,16 +135,17 @@ def graficas():
         menuGraficas()
         opcionMenu = raw_input("Selecciona una opcion >> ")
         if str(opcionMenu)=="1":
-            #Grafica Trafico de Interfaz de red
+            print("Grafica Trafico de Interfaz de red")
         elif str(opcionMenu)=="2":
-            #Grafica ICMP
+            print("Grafica ICMP")
         elif str(opcionMenu)=="3":
-            #Grafica TCP
+            print("Grafica TCP")
         elif str(opcionMenu)=="4":
-            #Graficas UDP
+            print("Graficas UDP")
         elif str(opcionMenu)=="4":
-            #Graficas Ping
+            print("Graficas Ping")
         elif (str(opcionMenu)=="q" or str(opcionMenu)=="Q"):
+            print("")
             break
         else:
             raw_input("Opcion incorrecta...pulsa una tecla para continuar >>")
@@ -161,8 +161,9 @@ while True:
     elif str(opcionMenu)=="3":
         estadoDispositivo()
     elif str(opcionMenu)=="4":
-        #Graficas
+        print("Graficas")
     elif (str(opcionMenu)=="q" or str(opcionMenu)=="Q"):
+        print("")
         break
     else:
         raw_input("Opcion incorrecta...pulsa una tecla para continuar >>")

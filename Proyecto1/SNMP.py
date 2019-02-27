@@ -1,8 +1,7 @@
 from pysnmp.hlapi import *
 
 class SNMP:
-    def __init__(self):
-    
+            
     def get(self,community,version_snmp,ip,port,oid):
         errorIndication, errorStatus, errorIndex, varBinds = next(
             getCmd(SnmpEngine(),

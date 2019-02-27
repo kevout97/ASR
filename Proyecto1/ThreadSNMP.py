@@ -5,7 +5,7 @@ from DataBaseRRDTOOL import DataBaseRRDTOOL
 from SNMP import SNMP
 
 class ThreadSNMP:
-    thread
+    thread = None
 
     def monitoring(self,ip,mainPojo,mainDBRRD,index):
         snmp = SNMP()

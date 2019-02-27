@@ -1,12 +1,12 @@
 from DataBaseMysql import DBClass
 import os
 class PojoAgent:
-    db
+    db = None
 
     def __init__(self,host,user,passwd,database):
         self.db = DBClass(host,user,passwd,database)
     
-    def insertAgent(self,hostname,version_snmp,port_snmp,community,status,ip,version_so,interfaces,last_reboot,mac,info_admin)
+    def insertAgent(self,hostname,version_snmp,port_snmp,community,status,ip,version_so,interfaces,last_reboot,mac,info_admin):
         query = "INSERT INTO agents (hostname,version_snmp,port_snmp,community,status) VALUES ('" + hostname + "','" + version_snmp + "'," + port_snmp +",'" + community +"','"+ status +"',UNIX_TIMESTAMP(NOW()))"
         self.db.insertUpdateDelete(query)
         query = "INSERT INTO devices (hostname,ip,version_so,interfaces,last_reboot,mac,info_admin) VALUES ('"+ hostname +"','"+ ip +"','"+ version_so +"',"+ interfaces +",'"+ last_reboot +"','"+ mac +"','"+ info_admin +"')"
@@ -90,9 +90,7 @@ class PojoAgent:
     def deleteAgent(self,hostname):
         query = "DELETE FROM agents WHERE hostname='"+ hostname +"'"
         self.db.insertUpdateDelete(query)
-        query = "DELETE FROM devices WHERE hostname='"+ hostname +"' AND ip='" + ip + "'"
-        self.db.insertUpdateDelete(query)
-        query = "DELETE FROM interfaces WHERE hostname='"+ hostname +"'"
+        query = "DELETE FROM devices WHERE hostname='"+ hostname +"'"
         self.db.insertUpdateDelete(query)
         os.system("rm -f "+ hostname +".rrd")
     

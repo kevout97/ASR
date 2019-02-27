@@ -97,3 +97,8 @@ class PojoAgent:
     def setStatus(self,hostname,status):
         query = "UPDATE agents SET status='"+ status +"' WHERE hostname='"+ hostname +"'"
         self.db.insertUpdateDelete(query)
+    
+    def getStatus(self,ip):
+        query = "SELECT status FROM agents, devices WHERE agents.hostname=devices.hostname AND devices.ip='" + ip + "'"
+        result = self.db.executeSelect(query)
+        return result[0][0]

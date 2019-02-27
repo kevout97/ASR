@@ -34,6 +34,7 @@ def agregarAgente():
     version_snmp = ""
     port_snmp = ""
     community = ""
+    index = ""
     pa = PojoAgent("localhost","root","","snmp")#Conexion con la base de datos
     paux = PojoAgent("localhost","root","","snmp")#Conexion con la base de datos
     snmp = SNMP()
@@ -58,8 +59,12 @@ def agregarAgente():
                         break
                     else:
                         community = raw_input("Introduce la comunidad: ")
-
-                        break
+                        if str(community) == "q" or str(community) == "Q":
+                            break
+                        else:
+                            index = raw_input("Introduce el index de la interfaz de red del agente: ")
+                            if str(index) == "q" or str(index) == "Q":
+                                break
         version_snmp = "0" if str(version_snmp) == "v1" else "1"
 
         ip = str(subprocess.check_output("cat /etc/hosts | grep \""+ str(hostname) +"\" | awk '{print $1}'",shell=True)).split("\n")[0]
@@ -83,7 +88,7 @@ def agregarAgente():
         
         pa.insertAgent(str(hostname),str(version_snmp),port_snmp,str(community),str(status),str(ip),str(version_so),int(interfaces),str(last_reboot),str(mac),str(info_admin))
         thread = ThreadSNMP()
-        thread.startMonitoring(str(ip),paux)
+        thread.startMonitoring(str(ip),paux,str(index))
         pa.closeConnection()
         agent = str(raw_input("El agente "+ str(hostname) +" ha sido agregado\n\nDesea agregar otro agente? ('y' o 'n') >>"))
 

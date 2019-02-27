@@ -9,6 +9,7 @@ def dispositivosRegistrados():
 
 def menu():
     os.system("clear")
+    dispositivosRegistrados()
     print("Menu Graficas")
     print("\t1 - Agregar Agente")
     print("\t2 - Eliminar Agente")
@@ -103,8 +104,6 @@ def eliminarAgente():
                 print("El hostname no existe.")
                 hostname = raw_input("Introduce el hostname del agente: ")
             else:
-                thread = ThreadSNMP()
-                thread.stopMonitoring(str(pa.getIP(str(hostname))))
                 pa.deleteAgent(str(hostname))
                 pa.closeConnection()
                 raw_input("El agente ha sido eliminado....presiona una tecla para regresar al Menu >>")

@@ -14,7 +14,7 @@ class ThreadSNMP:
         version_snmp = 0 if str(mainPojo.getVersionSNMP(str(hostname))) == "v1" else 1
         port_snmp = int(mainPojo.getPortSNMP(str(hostname)))
         while True:
-            if os.system("ping -c 1 " + str(ip) +" >/dev/null 2>&1 < /dev/null &") == 0 and mainPojo.getStatus(str(ip)) == "up" and len(str(mainPojo.geStatus(str(ip)))) > 0:
+            if os.system("ping -c 1 " + str(ip) +" >/dev/null 2>&1 < /dev/null &") == 0 and mainPojo.getStatus(str(ip)) == "up" and len(str(mainPojo.getStatus(str(ip)))) > 0:
                 in_network_interface = snmp.get(community,version_snmp,ip,port_snmp,"1.3.6.1.2.1.2.2.1.10."+ str(index))
                 out_network_interface = snmp.get(community,version_snmp,ip,port_snmp,"1.3.6.1.2.1.2.2.1.16."+ str(index))
                 in_icmp = snmp.get(community,version_snmp,ip,port_snmp,"1.3.6.1.2.1.5.1.0")

@@ -3,6 +3,7 @@ import subprocess
 from PojoAgent import PojoAgent
 from SNMP import SNMP
 from ThreadSNMP import ThreadSNMP
+import Graph
 
 def dispositivosRegistrados():
     print("Dispositivos")
@@ -136,14 +137,94 @@ def graficas():
         opcionMenu = raw_input("Selecciona una opcion >> ")
         if str(opcionMenu)=="1":
             print("Grafica Trafico de Interfaz de red")
+            hostname = raw_input("Introduce el hostname del agente: ")
+            pa = PojoAgent("localhost","root","","snmp")#Conexion con la base de datos
+            while True:
+                if str(hostname) == "q" or str(hostname) == "Q":
+                    break
+                else:
+                    result = pa.verifyHost(str(hostname))
+                    if len(result[0]) == 0:
+                        print("El hostname no existe.")
+                        hostname = raw_input("Introduce el hostname del agente: ")
+                    else:
+                        ip = pa.getIP(str(hostname))
+                        graphNetInt(ip)
+                        print("Grafica creada")
+                        raw_input("Presiona una tecla para regresar al menu >>")
+                        break
         elif str(opcionMenu)=="2":
             print("Grafica ICMP")
+            hostname = raw_input("Introduce el hostname del agente: ")
+            pa = PojoAgent("localhost","root","","snmp")#Conexion con la base de datos
+            while True:
+                if str(hostname) == "q" or str(hostname) == "Q":
+                    break
+                else:
+                    result = pa.verifyHost(str(hostname))
+                    if len(result[0]) == 0:
+                        print("El hostname no existe.")
+                        hostname = raw_input("Introduce el hostname del agente: ")
+                    else:
+                        ip = pa.getIP(str(hostname))
+                        graphICMP(ip)
+                        print("Grafica creada")
+                        raw_input("Presiona una tecla para regresar al menu >>")
+                        break
         elif str(opcionMenu)=="3":
             print("Grafica TCP")
+            hostname = raw_input("Introduce el hostname del agente: ")
+            pa = PojoAgent("localhost","root","","snmp")#Conexion con la base de datos
+            while True:
+                if str(hostname) == "q" or str(hostname) == "Q":
+                    break
+                else:
+                    result = pa.verifyHost(str(hostname))
+                    if len(result[0]) == 0:
+                        print("El hostname no existe.")
+                        hostname = raw_input("Introduce el hostname del agente: ")
+                    else:
+                        ip = pa.getIP(str(hostname))
+                        graphTCP(ip)
+                        print("Grafica creada")
+                        raw_input("Presiona una tecla para regresar al menu >>")
+                        break
         elif str(opcionMenu)=="4":
             print("Graficas UDP")
+            hostname = raw_input("Introduce el hostname del agente: ")
+            pa = PojoAgent("localhost","root","","snmp")#Conexion con la base de datos
+            while True:
+                if str(hostname) == "q" or str(hostname) == "Q":
+                    break
+                else:
+                    result = pa.verifyHost(str(hostname))
+                    if len(result[0]) == 0:
+                        print("El hostname no existe.")
+                        hostname = raw_input("Introduce el hostname del agente: ")
+                    else:
+                        ip = pa.getIP(str(hostname))
+                        graphUDP(ip)
+                        print("Grafica creada")
+                        raw_input("Presiona una tecla para regresar al menu >>")
+                        break
         elif str(opcionMenu)=="4":
             print("Graficas Ping")
+            hostname = raw_input("Introduce el hostname del agente: ")
+            pa = PojoAgent("localhost","root","","snmp")#Conexion con la base de datos
+            while True:
+                if str(hostname) == "q" or str(hostname) == "Q":
+                    break
+                else:
+                    result = pa.verifyHost(str(hostname))
+                    if len(result[0]) == 0:
+                        print("El hostname no existe.")
+                        hostname = raw_input("Introduce el hostname del agente: ")
+                    else:
+                        ip = pa.getIP(str(hostname))
+                        graphPing(ip)
+                        print("Grafica creada")
+                        raw_input("Presiona una tecla para regresar al menu >>")
+                        break
         elif (str(opcionMenu)=="q" or str(opcionMenu)=="Q"):
             print("")
             break
@@ -162,6 +243,7 @@ while True:
         estadoDispositivo()
     elif str(opcionMenu)=="4":
         print("Graficas")
+        menuGraficas()
     elif (str(opcionMenu)=="q" or str(opcionMenu)=="Q"):
         print("")
         break

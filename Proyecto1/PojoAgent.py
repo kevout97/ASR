@@ -1,7 +1,7 @@
 from DataBaseMysql import DBClass
 import os
 class PojoAgent:
-    private db
+    db
 
     def __init__(self,host,user,passwd,database):
         self.db = DBClass(host,user,passwd,database)
@@ -25,9 +25,19 @@ class PojoAgent:
         query = "SELECT hostname FROM agents"
         return self.db.executeSelect(query)
     
-    def getHostname(self,hostname):
-        query = "SELECT count(*) FROM agents WHERE hostname='"+ hostname +"'"
+    def verifyHost(self,hostname):
+        query = "SELECT count(*) FROM agents WHERE hostname='" + hostname + "'"
         return self.db.executeSelect(query)
+    
+    def getIP(self,hostname):
+        query = "SELECT ip FROM agents, devices WHERE agents.hostname=devices.hostname"
+        result = self.db.executeSelect(query)
+        return result[0][0]
+
+    def getHostname(self,ip):
+        query = "SELECT agents.hostname FROM agents, devices WHERE agents.hostname=devices.hostname AND devices.ip='"+ ip +"'"
+        result = self.db.executeSelect(query)
+        return result[0][0]
 
     def getVersionSNMP(self,hostname):
         query = "SELECT version_snmp FROM agents WHERE hostname='" + hostname + "'"

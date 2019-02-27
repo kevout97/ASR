@@ -6,8 +6,8 @@ class PojoAgent:
     def __init__(self,host,user,passwd,database):
         self.db = DBClass(host,user,passwd,database)
     
-    def insertAgent(self,hostname,version_snmp,port_snmp,community,status,ip,version_so,interfaces,last_reboot,mac,info_admin):
-        query = "INSERT INTO agents (hostname,version_snmp,port_snmp,community,status,initial_time) VALUES ('" + hostname + "','" + version_snmp + "'," + str(port_snmp) +",'" + community +"','"+ status +"',UNIX_TIMESTAMP(NOW()))"
+    def insertAgent(self,hostname,version_snmp,port_snmp,community,status,ip,version_so,interfaces,last_reboot,mac,info_admin,index):
+        query = "INSERT INTO agents (hostname,version_snmp,port_snmp,community,status,initial_time,indice) VALUES ('" + hostname + "','" + version_snmp + "'," + str(port_snmp) +",'" + community +"','"+ status +"',UNIX_TIMESTAMP(NOW()),"+ index +")"
         self.db.insertUpdateDelete(query)
         query = "INSERT INTO devices (hostname,ip,version_so,interfaces,last_reboot,mac,info_admin) VALUES ('"+ hostname +"','"+ ip +"','"+ version_so +"',"+ str(interfaces) +",'"+ last_reboot +"','"+ mac +"','"+ info_admin +"')"
         self.db.insertUpdateDelete(query)
@@ -25,6 +25,11 @@ class PojoAgent:
     def getAllHosts(self):
         query = "SELECT hostname FROM agents"
         return self.db.executeSelect(query)
+    
+    def getIndex(self,ip):
+        query = "SELECT agents.index FROM agents, devices WHERE agents.hostname=devices.hostname AND devices.ip='"+ ip +"'"
+        result = self.db.executeSelect(query)
+        return result[0][0]
     
     def verifyHost(self,hostname):
         query = "SELECT hostname FROM agents WHERE hostname='" + hostname + "'"
@@ -88,12 +93,12 @@ class PojoAgent:
     def closeConnection(self):
         self.db.closeConnection()
     
-    def deleteAgent(self,hostname):
+    def deleteAgent(self,hostname,ip):
         query = "DELETE FROM agents WHERE hostname='"+ hostname +"'"
         self.db.insertUpdateDelete(query)
         query = "DELETE FROM devices WHERE hostname='"+ hostname +"'"
         self.db.insertUpdateDelete(query)
-        os.system("rm -f "+ hostname +".rrd")
+        os.system("rm -f "+ ip +".rrd")
     
     def setStatus(self,hostname,status):
         query = "UPDATE agents SET status='"+ status +"' WHERE hostname='"+ hostname +"'"

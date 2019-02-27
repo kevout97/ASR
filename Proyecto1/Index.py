@@ -4,12 +4,36 @@ from PojoAgent import PojoAgent
 from SNMP import SNMP
 from ThreadSNMP import ThreadSNMP
 
-def dispositivosRegistrados():
-    print("Dispositivos")
-
-def menu():
+def dispositivosRegistrados(flag):
+    print("Dispositivos\n###############################################################################")
+    pa = PojoAgent("localhost","root","","snmp")#Conexion con la base de datos
+    paux = PojoAgent("localhost","root","","snmp")#Conexion con la base de datos
+    hosts = pa.getAllHosts()
+    for i in range(0,len(hosts)):
+        if flag and os.system("ping -c 1 " + str(hosts[i][0]) +" >/dev/null 2>&1 < /dev/null &") == 0:
+            ip = str(pa.getIP(str(hosts[i][0])))
+            index = str(pa.getIndex(str(ip)))
+            pa.setStatus(str(hosts[i][0]),"up")
+            thread = ThreadSNMP()
+            thread.startMonitoring(str(ip),paux,str(index))
+        else:
+            ip = str(pa.getIP(str(hosts[i][0])))
+            status = str(pa.getStatus(str(ip)))
+            if status == "down" and os.system("ping -c 1 " + str(hosts[i][0]) +" >/dev/null 2>&1 < /dev/null &") == 0:
+                index = str(pa.getIndex(str(ip)))
+                thread = ThreadSNMP()
+                thread.startMonitoring(str(ip),paux,str(index))
+            elif os.system("ping -c 1 " + str(hosts[i][0]) +" >/dev/null 2>&1 < /dev/null &") == 1:
+                pa.setStatus(str(hosts[i][0]),"down")
+    
+    for i in range(0,len(hosts)):
+        print("Dispositivo: "+ str(i+1))
+        print("Hostname: "+ str(hosts[i][0]))
+        print("Numero de Interfaces: "+str(pa.getInterfaces(str(hosts[i][0]),pa.getIP(str(hosts[i][0])))))
+        print("###############################################################################") 
+def menu(flag):
     os.system("clear")
-    dispositivosRegistrados()
+    dispositivosRegistrados(flag)
     print("Menu Graficas")
     print("\t1 - Agregar Agente")
     print("\t2 - Eliminar Agente")
@@ -86,7 +110,7 @@ def agregarAgente():
         oid = "1.3.6.1.2.1.1.4.0" #Oid para obtener informacion del administrador
         info_admin = snmp.get(str(community),int(version_snmp),str(hostname),str(port_snmp),str(oid))
 
-        pa.insertAgent(str(hostname),str(version_snmp),port_snmp,str(community),str(status),str(ip),str(version_so),int(interfaces),str(last_reboot),str(mac),str(info_admin))
+        pa.insertAgent(str(hostname),str(version_snmp),port_snmp,str(community),str(status),str(ip),str(version_so),int(interfaces),str(last_reboot),str(mac),str(info_admin),str(index))
         thread = ThreadSNMP()
         thread.startMonitoring(str(ip),paux,str(index))
         pa.closeConnection()
@@ -104,7 +128,8 @@ def eliminarAgente():
                 print("El hostname no existe.")
                 hostname = raw_input("Introduce el hostname del agente: ")
             else:
-                pa.deleteAgent(str(hostname))
+                ip = pa.getIP(str(hostname))
+                pa.deleteAgent(str(hostname), str(ip))
                 pa.closeConnection()
                 raw_input("El agente ha sido eliminado....presiona una tecla para regresar al Menu >>")
                 break
@@ -149,9 +174,10 @@ def graficas():
         else:
             raw_input("Opcion incorrecta...pulsa una tecla para continuar >>")
 
-
+flag = True
 while True:
-    menu()
+    menu(flag)
+    flag = False
     opcionMenu = raw_input("Selecciona una opcion >> ")
     if str(opcionMenu)=="1":
         agregarAgente()

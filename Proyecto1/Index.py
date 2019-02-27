@@ -148,8 +148,8 @@ def graficas():
                         print("El hostname no existe.")
                         hostname = raw_input("Introduce el hostname del agente: ")
                     else:
-                        ip = pa.getIP(str(hostname))
-                        graphNetInt(ip)
+                        #ip = pa.getIP(str(hostname))
+                        graphNetInt(hostname)
                         print("Grafica creada")
                         raw_input("Presiona una tecla para regresar al menu >>")
                         break
@@ -166,8 +166,8 @@ def graficas():
                         print("El hostname no existe.")
                         hostname = raw_input("Introduce el hostname del agente: ")
                     else:
-                        ip = pa.getIP(str(hostname))
-                        graphICMP(ip)
+                        #ip = pa.getIP(str(hostname))
+                        graphICMP(hostname)
                         print("Grafica creada")
                         raw_input("Presiona una tecla para regresar al menu >>")
                         break
@@ -184,8 +184,8 @@ def graficas():
                         print("El hostname no existe.")
                         hostname = raw_input("Introduce el hostname del agente: ")
                     else:
-                        ip = pa.getIP(str(hostname))
-                        graphTCP(ip)
+                        #ip = pa.getIP(str(hostname))
+                        graphTCP(hostname)
                         print("Grafica creada")
                         raw_input("Presiona una tecla para regresar al menu >>")
                         break
@@ -202,8 +202,8 @@ def graficas():
                         print("El hostname no existe.")
                         hostname = raw_input("Introduce el hostname del agente: ")
                     else:
-                        ip = pa.getIP(str(hostname))
-                        graphUDP(ip)
+                        #ip = pa.getIP(str(hostname))
+                        graphUDP(hostname)
                         print("Grafica creada")
                         raw_input("Presiona una tecla para regresar al menu >>")
                         break
@@ -220,8 +220,8 @@ def graficas():
                         print("El hostname no existe.")
                         hostname = raw_input("Introduce el hostname del agente: ")
                     else:
-                        ip = pa.getIP(str(hostname))
-                        graphPing(ip)
+                        #ip = pa.getIP(str(hostname))
+                        graphPing(hostname)
                         print("Grafica creada")
                         raw_input("Presiona una tecla para regresar al menu >>")
                         break

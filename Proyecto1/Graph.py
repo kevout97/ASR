@@ -6,59 +6,68 @@ from PojoAgent import PojoAgent
 #tiempo_actual = int(time.time())
 #tiempo_final = tiempo_actual - 86400
 #tiempo_inicial = tiempo_final -25920000
-start = getStart(ip);
 
 def graphNetInt(ip):
+    pa = PojoAgent("localhost","root","","snmp")#Conexion con la base de datos
+    start = pa.getStart(ip);
     ret = rrdtool.graph( ip+"TraficoInterfazRed.png",
                     "--start", str(start),
 #                   "--end","N",
                     "--vertical-label=Bytes/s",
-                    "DEF:in_network_interface="+ip+".rrd:in_network_interface:AVERAGE",
-                    "DEF:out_network_interface="+ip+".rrd:out_network_interface:AVERAGE",
-                    "AREA:in_network_interface#00FF00:In traffic",
-                    "LINE1:out_network_interface#0000FF:Out traffic\r")
+                    "DEF:innetworkinterface="+ip+".rrd:innetworkinterface:AVERAGE",
+                    "DEF:outnetworkinterface="+ip+".rrd:outnetworkinterface:AVERAGE",
+                    "AREA:innetworkinterface#00FF00:In traffic",
+                    "LINE1:outnetworkinterface#0000FF:Out traffic\r")
     return ret
 
 def graphICMP(ip):
+    pa = PojoAgent("localhost","root","","snmp")#Conexion con la base de datos
+    start = pa.getStart(ip);
     ret = rrdtool.graph( ip+"ICMP.png",
                     "--start", str(start),
 #                   "--end","N",
                     "--vertical-label=Bytes/s",
-                    "DEF:in_icmp="+ip+".rrd:in_icmp:AVERAGE",
-                    "DEF:out_icmp="+ip+".rrd:out_icmp:AVERAGE",
-                    "AREA:in_icmp#00FF00:In traffic",
-                    "LINE1:out_icmp#0000FF:Out traffic\r")
+                    "DEF:inicmp="+ip+".rrd:inicmp:AVERAGE",
+                    "DEF:outicmp="+ip+".rrd:outicmp:AVERAGE",
+                    "AREA:inicmp#00FF00:In traffic",
+                    "LINE1:outicmp#0000FF:Out traffic\r")
     return ret
 
 def graphTCP(ip):
+    pa = PojoAgent("localhost","root","","snmp")#Conexion con la base de datos
+    start = pa.getStart(ip);
     ret = rrdtool.graph( ip+"TCP.png",
                     "--start", str(start),
 #                   "--end","N",
                     "--vertical-label=Bytes/s",
-                    "DEF:in_tcp="+ip+".rrd:in_tcp:AVERAGE",
-                    "DEF:out_tcp="+ip+".rrd:out_tcp:AVERAGE",
-                    "AREA:in_tcp#00FF00:In traffic",
-                    "LINE1:out_tcp#0000FF:Out traffic\r")
+                    "DEF:intcp="+ip+".rrd:intcp:AVERAGE",
+                    "DEF:outtcp="+ip+".rrd:outtcp:AVERAGE",
+                    "AREA:intcp#00FF00:In traffic",
+                    "LINE1:outtcp#0000FF:Out traffic\r")
     return ret
 
 def graphUDP(ip):
+    pa = PojoAgent("localhost","root","","snmp")#Conexion con la base de datos
+    start = pa.getStart(ip);
     ret = rrdtool.graph( ip+"UDP.png",
                     "--start", str(start),
 #                   "--end","N",
                     "--vertical-label=Bytes/s",
-                    "DEF:in_udp="+ip+".rrd:in_udp:AVERAGE",
-                    "DEF:out_udp="+ip+".rrd:out_udp:AVERAGE",
-                    "AREA:in_udp#00FF00:In traffic",
-                    "LINE1:out_udp#0000FF:Out traffic\r")
+                    "DEF:inudp="+ip+".rrd:inudp:AVERAGE",
+                    "DEF:outudp="+ip+".rrd:outudp:AVERAGE",
+                    "AREA:inudp#00FF00:In traffic",
+                    "LINE1:outudp#0000FF:Out traffic\r")
     return ret
 
 def graphPing(ip):
+    pa = PojoAgent("localhost","root","","snmp")#Conexion con la base de datos
+    start = pa.getStart(ip);
     ret = rrdtool.graph( ip+"Ping.png",
                     "--start", str(start),
 #                   "--end","N",
                     "--vertical-label=Bytes/s",
-                    "DEF:in_ping="+ip+".rrd:in_ping:AVERAGE",
-                    "DEF:out_ping="+ip+".rrd:out_ping:AVERAGE",
-                    "AREA:in_ping#00FF00:In traffic",
-                    "LINE1:out_ping#0000FF:Out traffic\r")
+                    "DEF:inping="+ip+".rrd:inping:AVERAGE",
+                    "DEF:outping="+ip+".rrd:outping:AVERAGE",
+                    "AREA:inping#00FF00:In traffic",
+                    "LINE1:outping#0000FF:Out traffic\r")
     return ret

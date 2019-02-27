@@ -14,7 +14,7 @@ class ThreadSNMP:
         version_snmp = 0 if str(mainPojo.getVersionSNMP(str(hostname))) == "v1" else 1
         port_snmp = int(mainPojo.getPortSNMP(str(hostname)))
         while True:
-            if os.system("ping -c 1 " + str(hostname)) == 0 and mainPojo.geStatus(str(ip)) == "up" and len(str(mainPojo.geStatus(str(ip)))) > 0:
+            if os.system("ping -c 1 " + str(ip) +" >/dev/null 2>&1 < /dev/null &") == 0 and mainPojo.geStatus(str(ip)) == "up" and len(str(mainPojo.geStatus(str(ip)))) > 0:
                 in_network_interface = snmp.get(community,version_snmp,ip,port_snmp,"1.3.6.1.2.1.2.2.1.10."+ str(index))
                 out_network_interface = snmp.get(community,version_snmp,ip,port_snmp,"1.3.6.1.2.1.2.2.1.16."+ str(index))
                 in_icmp = snmp.get(community,version_snmp,ip,port_snmp,"1.3.6.1.2.1.5.1.0")
@@ -34,14 +34,14 @@ class ThreadSNMP:
                 break
 
     def startMonitoring(self,ip,mainPojo,index):
-        if os.path.isfile(ip + ".rrd"):
-            self.dbrrd = DataBaseRRDTOOL(ip + ".rrd")
+        if os.path.isfile(str(ip) + ".rrd"):
+            self.dbrrd = DataBaseRRDTOOL(str(ip) + ".rrd")
             nameThread = ip + "thread"
             self.thread = threading.Thread(target=self.monitoring, name=nameThread,args=(ip,mainPojo,self.dbrrd,index,))
             self.thread.setDaemon(True)
             self.thread.start()
         else:
-            self.dbrrd = DataBaseRRDTOOL(ip + ".rrd")
+            self.dbrrd = DataBaseRRDTOOL(str(ip) + ".rrd")
             self.dbrrd.create()
             nameThread = ip + "thread"
             self.thread = threading.Thread(target=self.monitoring, name=nameThread,args=(ip,mainPojo,self.dbrrd,index,))

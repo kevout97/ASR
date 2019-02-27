@@ -28,3 +28,4 @@ class DBClass:
     
     def insertUpdateDelete(self,query):
         self.cursor.execute(query)
+        self.db.commit()

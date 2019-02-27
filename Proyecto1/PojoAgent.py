@@ -7,10 +7,11 @@ class PojoAgent:
         self.db = DBClass(host,user,passwd,database)
     
     def insertAgent(self,hostname,version_snmp,port_snmp,community,status,ip,version_so,interfaces,last_reboot,mac,info_admin):
-        query = "INSERT INTO agents (hostname,version_snmp,port_snmp,community,status) VALUES ('" + hostname + "','" + version_snmp + "'," + port_snmp +",'" + community +"','"+ status +"',UNIX_TIMESTAMP(NOW()))"
+        query = "INSERT INTO agents (hostname,version_snmp,port_snmp,community,status,initial_time) VALUES ('" + hostname + "','" + version_snmp + "'," + str(port_snmp) +",'" + community +"','"+ status +"',UNIX_TIMESTAMP(NOW()))"
         self.db.insertUpdateDelete(query)
-        query = "INSERT INTO devices (hostname,ip,version_so,interfaces,last_reboot,mac,info_admin) VALUES ('"+ hostname +"','"+ ip +"','"+ version_so +"',"+ interfaces +",'"+ last_reboot +"','"+ mac +"','"+ info_admin +"')"
+        query = "INSERT INTO devices (hostname,ip,version_so,interfaces,last_reboot,mac,info_admin) VALUES ('"+ hostname +"','"+ ip +"','"+ version_so +"',"+ str(interfaces) +",'"+ last_reboot +"','"+ mac +"','"+ info_admin +"')"
         self.db.insertUpdateDelete(query)
+        print("Insert hecho")
     
     def getAllAgentsDevices(self):
         query = "SELECT agents.hostname,version_snmp,port_snmp,community,ip,version_so,interfaces,last_reboot,mac,info_admin FROM agents, devices WHERE agents.hostname=devices.hostname"
@@ -26,7 +27,7 @@ class PojoAgent:
         return self.db.executeSelect(query)
     
     def verifyHost(self,hostname):
-        query = "SELECT count(*) FROM agents WHERE hostname='" + hostname + "'"
+        query = "SELECT hostname FROM agents WHERE hostname='" + hostname + "'"
         return self.db.executeSelect(query)
     
     def getIP(self,hostname):

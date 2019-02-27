@@ -7,18 +7,18 @@ class DataBaseRRDTOOL:
 
     def create(self):
         ret = rrdtool.create(str(self.name),
-                     "--start",'N', #Tiempo de inicio
-                     "--step",'60', #Tiempo en el que se actualizara la base de datos
-                     "DS:in_network_interface:COUNTER:60:U:U", #Trafico de Interfaz de red (entrada)
-                     "DS:out_network_interface:COUNTER:60:U:U", #Trafico de Interfaz de red (salida)
-                     "DS:in_icmp:COUNTER:60:U:U", #Estadisticas ICMP (entrada)
-                     "DS:out_icmp:COUNTER:60:U:U", #Estadisticas ICMP (salida)
-                     "DS:in_tcp:COUNTER:60:U:U", #Estadisticas TCP (entrada)
-                     "DS:out_tcp:COUNTER:60:U:U", #Estadisticas TCP (Salida)
-                     "DS:in_udp:COUNTER:60:U:U", #Estadisticas UDP (entrada)
-                     "DS:out_udp:COUNTER:60:U:U", #Estadisticas UDP (salida)
-                     "DS:in_ping:COUNTER:60:U:U", #Estadisticas Ping (entrada)
-                     "DS:out_ping:COUNTER:60:U:U", #Estadisticas Ping (salida)
+                     "--start",'N',
+                     "--step",'60',
+                     "DS:innetworkinterface:COUNTER:60:U:U",
+                     "DS:outnetworkinterface:COUNTER:60:U:U",
+                     "DS:inicmp:COUNTER:60:U:U",
+                     "DS:outicmp:COUNTER:60:U:U",
+                     "DS:intcp:COUNTER:60:U:U",
+                     "DS:outtcp:COUNTER:60:U:U",
+                     "DS:inudp:COUNTER:60:U:U",
+                     "DS:outudp:COUNTER:60:U:U",
+                     "DS:inping:COUNTER:60:U:U",
+                     "DS:outping:COUNTER:60:U:U",
                      "RRA:AVERAGE:0.5:1:50",
                      "RRA:AVERAGE:0.5:1:50",
                      "RRA:AVERAGE:0.5:1:50",

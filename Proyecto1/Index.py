@@ -45,11 +45,11 @@ def agregarAgente():
             break
         else:
             result = pa.verifyHost(str(hostname))
-            if len(result[0]) > 0:
+            if len(result) > 0:
                 print("El hostname ya se encuentra registrado.")
                 hostname = raw_input("Introduce el hostname del agente: ")
             else:
-                status = "up" if os.system("ping -c 1 " + str(hostname)) == 0 else "down"
+                status = "up" if os.system("ping -c 1 " + str(hostname) +" >/dev/null 2>&1 < /dev/null &") == 0 else "down"
                 version_snmp = raw_input("Introduce la version de snmp ('v1' o 'v2c'): ")
                 if str(version_snmp) == "q" or str(version_snmp) == "Q":
                     break
@@ -90,7 +90,7 @@ def agregarAgente():
         thread = ThreadSNMP()
         thread.startMonitoring(str(ip),paux,str(index))
         pa.closeConnection()
-        agent = str(raw_input("El agente "+ str(hostname) +" ha sido agregado\n\nDesea agregar otro agente? ('y' o 'n') >>"))
+        agent = str(raw_input("El agente "+ str(hostname) +" ha sido agregado...Desea agregar otro agente? ('y' o 'n') >>"))
 
 def eliminarAgente():
     hostname = raw_input("Introduce el hostname del agente: ")
@@ -118,12 +118,12 @@ def estadoDispositivo():
             break
         else:
             result = pa.verifyHost(str(hostname))
-            if len(result[0]) == 0:
+            if len(result) == 0:
                 print("El hostname no existe.")
                 hostname = raw_input("Introduce el hostname del agente: ")
             else:
                 ip = pa.getIP(str(hostname))
-                print("Hostname:\t"+ str(hostname) +"\nIP:\t" + str(pa.getIP(str(hostname))) +"\nVersion SO:\t"+ str(pa.getVersionSO(str(hostname))) +"\nNumero Interfaces:\t"+ str(pa.getInterfaces(str(hostname),str(ip))) +"\nUltimo Reinicio:\t"+ str(pa.getLastReboot(str(hostname),str(ip))) +"\nMAC:\t"+ str(pa.getMac(str(hostname),str(ip))) +"\nInfo. Admin:\t"+ str(pa.getInfoAdmin(str(hostname),str(ip))))
+                print("Hostname:           "+ str(hostname) +"\nIP:                 " + str(pa.getIP(str(hostname))) +"\nVersion SO:        "+ str(pa.getVersionSO(str(hostname),str(ip))) +"\nNumero Interfaces:  "+ str(pa.getInterfaces(str(hostname),str(ip))) +"\nUltimo Reinicio:   "+ str(pa.getLastReboot(str(hostname),str(ip))) +"\nUbicacion Fisica:  "+ str(pa.getMac(str(hostname),str(ip))) +"\nInfo. Admin:       "+ str(pa.getInfoAdmin(str(hostname),str(ip))))
                 pa.closeConnection()
                 raw_input("Presiona una tecla para regresar al menu >>")
                 break

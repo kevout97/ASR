@@ -3,7 +3,7 @@ import subprocess
 from PojoAgent import PojoAgent
 from SNMP import SNMP
 from ThreadSNMP import ThreadSNMP
-import Graph
+from Graph import *
 
 def dispositivosRegistrados():
     print("Dispositivos")
@@ -207,7 +207,7 @@ def graficas():
                         print("Grafica creada")
                         raw_input("Presiona una tecla para regresar al menu >>")
                         break
-        elif str(opcionMenu)=="4":
+        elif str(opcionMenu)=="5":
             print("Graficas Ping")
             hostname = raw_input("Introduce el hostname del agente: ")
             pa = PojoAgent("localhost","root","","snmp")#Conexion con la base de datos

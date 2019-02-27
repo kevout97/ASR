@@ -243,7 +243,7 @@ while True:
         estadoDispositivo()
     elif str(opcionMenu)=="4":
         print("Graficas")
-        menuGraficas()
+        graficas()
     elif (str(opcionMenu)=="q" or str(opcionMenu)=="Q"):
         print("")
         break

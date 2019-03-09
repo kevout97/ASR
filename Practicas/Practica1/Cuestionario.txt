@@ -3,7 +3,7 @@
 2) ¿Qué representa el parámetro snmpEngine y escribe los valores que acepta?
     Instancia de clase que representa el motor SNMP.
 3) ¿Para qué sirve el parámetro transportTarget?
-    Es el host al cuál se relaizará la petición y el puerto SNMP.
+    Es el host al cuál se realizará la petición y el puerto SNMP.
 4) ¿Cuál es la función del parámetro contextData?
     Instancia de clase que representa los valores de SNMP ContextEngineId y ContextName.
 5) Describe el parámetro varBinds

@@ -98,7 +98,7 @@ class PojoAgent:
         self.db.insertUpdateDelete(query)
         query = "DELETE FROM devices WHERE hostname='"+ hostname +"'"
         self.db.insertUpdateDelete(query)
-        os.system("rm -f "+ ip +".rrd")
+        os.system("rm -f "+ hostname +".rrd")
     
     def setStatus(self,hostname,status):
         query = "UPDATE agents SET status='"+ status +"' WHERE hostname='"+ hostname +"'"

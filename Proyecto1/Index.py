@@ -93,6 +93,7 @@ def agregarAgente():
                             index = raw_input("Introduce el index de la interfaz de red del agente: ")
                             if str(index) == "q" or str(index) == "Q":
                                 break
+
         version_snmp = "0" if str(version_snmp) == "v1" else "1"
 
         ip = str(subprocess.check_output("cat /etc/hosts | grep \""+ str(hostname) +"\" | awk '{print $1}'",shell=True)).split("\n")[0]

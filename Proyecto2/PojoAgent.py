@@ -6,12 +6,33 @@ class PojoAgent:
     def __init__(self,host,user,passwd,database):
         self.db = DBClass(host,user,passwd,database)
     
-    def insertAgent(self,hostname,version_snmp,port_snmp,community,status,ip,version_so,interfaces,last_reboot,mac,info_admin,index):
-        query = "INSERT INTO agents (hostname,version_snmp,port_snmp,community,status,initial_time,indice) VALUES ('" + hostname + "','" + version_snmp + "'," + str(port_snmp) +",'" + community +"','"+ status +"',UNIX_TIMESTAMP(NOW()),"+ index +")"
+    def insertAgent(self,hostname,version_snmp,port_snmp,community,status,ip,version_so,interfaces,last_reboot,mac,info_admin,index,indexCPU):
+        query = "INSERT INTO agents (hostname,version_snmp,port_snmp,community,status,initial_time,indice,indiceCPU) VALUES ('" + hostname + "','" + version_snmp + "'," + str(port_snmp) +",'" + community +"','"+ status +"',UNIX_TIMESTAMP(NOW()),"+ index +","+ indexCPU +")"
         self.db.insertUpdateDelete(query)
         query = "INSERT INTO devices (hostname,ip,version_so,interfaces,last_reboot,mac,info_admin) VALUES ('"+ hostname +"','"+ ip +"','"+ version_so +"',"+ str(interfaces) +",'"+ last_reboot +"','"+ mac +"','"+ info_admin +"')"
         self.db.insertUpdateDelete(query)
         print("Insert hecho")
+    
+    def updateIndex(self,ip,indexRAM,indexHDD):
+        query = "UPDATE agents SET indiceRAM="+ indexRAM +", indiceHDD="+ indexHDD +" WHERE hostname='"+ ip +"'"
+        self.db.insertUpdateDelete(query)
+    
+    def getIndexRAM(self,ip):
+        query = "SELECT indiceRAM FROM agents WHERE hostname='"+ ip +"'"
+        result = self.db.executeSelect(query)
+        return result[0][0]
+    
+    def getIndexHDD(self,ip):
+        query = "SELECT indiceHDD FROM agents WHERE hostname='"+ ip +"'"
+        result = self.db.executeSelect(query)
+        return result[0][0]
+
+    def ifWindows(self,ip):
+        query = 'SELECT * FROM devices WHERE version_so LIKE "%Windows%" AND ip="'+ ip +'"'
+        result = self.db.executeSelect(query)
+        if len(result) == 0:
+            return False
+        return True
     
     def getAllAgentsDevices(self):
         query = "SELECT agents.hostname,version_snmp,port_snmp,community,ip,version_so,interfaces,last_reboot,mac,info_admin FROM agents, devices WHERE agents.hostname=devices.hostname"
@@ -28,6 +49,11 @@ class PojoAgent:
     
     def getIndex(self,ip):
         query = "SELECT agents.indice FROM agents, devices WHERE agents.hostname=devices.hostname AND devices.ip='"+ ip +"'"
+        result = self.db.executeSelect(query)
+        return result[0][0]
+    
+    def getIndexCPU(self,ip):
+        query = "SELECT agents.indiceCPU FROM agents, devices WHERE agents.hostname=devices.hostname AND devices.ip='"+ ip +"'"
         result = self.db.executeSelect(query)
         return result[0][0]
     

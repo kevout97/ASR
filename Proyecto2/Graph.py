@@ -7,78 +7,14 @@ from PojoAgent import PojoAgent
 #tiempo_final = tiempo_actual - 86400
 #tiempo_inicial = tiempo_final -25920000
 
-def graphNetInt(ip):
-    pa = PojoAgent("localhost","root","","snmp")#Conexion con la base de datos
-    start = pa.getStart(ip);
-    ret = rrdtool.graph( ip+"TraficoInterfazRed.png",
-                    "--start", str(start),
-#                   "--end","N",
-                    "--vertical-label=Bytes/s",
-                    "DEF:innetworkinterface="+ip+".rrd:innetworkinterface:AVERAGE",
-                    "DEF:outnetworkinterface="+ip+".rrd:outnetworkinterface:AVERAGE",
-                    "AREA:innetworkinterface#00FF00:In traffic",
-                    "LINE1:outnetworkinterface#0000FF:Out traffic\r")
-    return ret
-
-def graphICMP(ip):
-    pa = PojoAgent("localhost","root","","snmp")#Conexion con la base de datos
-    start = pa.getStart(ip);
-    ret = rrdtool.graph( ip+"ICMP.png",
-                    "--start", str(start),
-#                   "--end","N",
-                    "--vertical-label=Bytes/s",
-                    "DEF:inicmp="+ip+".rrd:inicmp:AVERAGE",
-                    "DEF:outicmp="+ip+".rrd:outicmp:AVERAGE",
-                    "AREA:inicmp#00FF00:In traffic",
-                    "LINE1:outicmp#0000FF:Out traffic\r")
-    return ret
-
-def graphTCP(ip):
-    pa = PojoAgent("localhost","root","","snmp")#Conexion con la base de datos
-    start = pa.getStart(ip);
-    ret = rrdtool.graph( ip+"TCP.png",
-                    "--start", str(start),
-#                   "--end","N",
-                    "--vertical-label=Bytes/s",
-                    "DEF:intcp="+ip+".rrd:intcp:AVERAGE",
-                    "DEF:outtcp="+ip+".rrd:outtcp:AVERAGE",
-                    "AREA:intcp#00FF00:In traffic",
-                    "LINE1:outtcp#0000FF:Out traffic\r")
-    return ret
-
-def graphUDP(ip):
-    pa = PojoAgent("localhost","root","","snmp")#Conexion con la base de datos
-    start = pa.getStart(ip);
-    ret = rrdtool.graph( ip+"UDP.png",
-                    "--start", str(start),
-#                   "--end","N",
-                    "--vertical-label=Bytes/s",
-                    "DEF:inudp="+ip+".rrd:inudp:AVERAGE",
-                    "DEF:outudp="+ip+".rrd:outudp:AVERAGE",
-                    "AREA:inudp#00FF00:In traffic",
-                    "LINE1:outudp#0000FF:Out traffic\r")
-    return ret
-
-def graphPing(ip):
-    pa = PojoAgent("localhost","root","","snmp")#Conexion con la base de datos
-    start = pa.getStart(ip)
-    ret = rrdtool.graph( ip+"Ping.png",
-                    "--start", str(start),
-#                   "--end","N",
-                    "--vertical-label=Bytes/s",
-                    "DEF:inping="+ip+".rrd:inping:AVERAGE",
-                    "DEF:outping="+ip+".rrd:outping:AVERAGE",
-                    "AREA:inping#00FF00:In traffic",
-                    "LINE1:outping#0000FF:Out traffic\r")
-    return ret
-
 def graphCPU(ip):
     ultima_lectura = int(rrdtool.last(ip +".rrd"))
-    tiempo_final = ultima_lectura + 3600
+    tiempo_final = 1539667800 + (3600 * 2)
     tiempo_inicial = ultima_lectura - 3600
+    
 
     ret = rrdtool.graph( ip+"CPU.png",
-                        "--start",str(tiempo_inicial),
+                        "--start","1539656263",
                         "--end",str(tiempo_final),
                         "--vertical-label=Carga CPU",
                         "--title=Uso de CPU Host: "+str(ip),
@@ -86,28 +22,35 @@ def graphCPU(ip):
                         '--vertical-label', "Uso de CPU (%)",
                         '--lower-limit', '0',
                         '--upper-limit', '100',
-                        "DEF:carga="+ip+".rrd:cpuload:AVERAGE",
-                        "AREA:carga#00FF00:Carga CPU",
+                        '--width', '600', 
+                        '--height', '240',
+                        "DEF:carga="+ip+".rrd:CPUload:AVERAGE",
+                        "CDEF:umbral90=carga,90,LT,0,carga,IF",
+                        "AREA:carga#00FF00:Carga CPU\\n",
                         "LINE1:30",
-                        "AREA:5#ff000022:stack",
+                        "AREA:5#ff000022:stack\\n",
                         "VDEF:CPUlast=carga,LAST",
                         "VDEF:CPUmin=carga,MINIMUM",
                         "VDEF:CPUavg=carga,AVERAGE",
                         "VDEF:CPUmax=carga,MAXIMUM",
-
-                        "COMMENT:Now          Min             Avg             Max\n",
-                        "GPRINT:CPUlast:%12.0lf%s",
-                        "GPRINT:CPUmin:%10.0lf%s",
-                        "GPRINT:CPUavg:%13.0lf%s",
-                        "GPRINT:CPUmax:%13.0lf%s",
+                        "AREA:umbral90#EA0000:Trafico de carga mayor que 90\\n",
+                        "HRULE:90#FF0000:Umbral - 90%\\n",
+                        "GPRINT:CPUlast:%12.0lf%s LAST",
+                        "GPRINT:CPUmin:%10.0lf%s MIN",
+                        "GPRINT:CPUavg:%13.0lf%s AVG",
+                        "GPRINT:CPUmax:%13.0lf%s MAX\\n",
                         "VDEF:m=carga,LSLSLOPE",
                         "VDEF:b=carga,LSLINT",
                         'CDEF:tendencia=carga,POP,m,COUNT,*,b,+',
+                        "CDEF:prediccion=tendencia,90,100,LIMIT",
+                        "VDEF:prediccionFIRST=prediccion,FIRST",
+                        "VDEF:prediccionLAST=prediccion,LAST",
+                        "GPRINT:prediccionFIRST: Umbral 90%  @ %c \\n:strftime",
                         "LINE2:tendencia#FFBB00" )
 
 def graphRAM(ip):
     ultima_lectura = int(rrdtool.last(ip +".rrd"))
-    tiempo_final = ultima_lectura + 3600
+    tiempo_final = ultima_lectura + (3600 * 2)
     tiempo_inicial = ultima_lectura - 3600
 
     ret = rrdtool.graph( ip+"RAM.png",
@@ -119,20 +62,29 @@ def graphRAM(ip):
                         '--vertical-label', "Uso de RAM (%)",
                         '--lower-limit', '0',
                         '--upper-limit', '100',
+                        '--width', '600', 
+                        '--height', '240',
                         "DEF:carga="+ip+".rrd:ramload:AVERAGE",
-                        "AREA:carga#00FF00:Uso de RAM",
+                        "CDEF:umbral90=carga,80,LT,0,carga,IF",
+                        "CDEF:prediccion=carga,80,100,LIMIT",
+                        "VDEF:prediccionFIRST=prediccion,FIRST",
+                        "VDEF:prediccionLAST=prediccion,LAST",
+                        "AREA:carga#00FF00:Uso de RAM\\n",
                         "LINE1:30",
-                        "AREA:5#ff000022:stack",
+                        "AREA:5#ff000022:stack\\n",
                         "VDEF:CPUlast=carga,LAST",
                         "VDEF:CPUmin=carga,MINIMUM",
                         "VDEF:CPUavg=carga,AVERAGE",
                         "VDEF:CPUmax=carga,MAXIMUM",
-
-                        "COMMENT:Now          Min             Avg             Max\n",
-                        "GPRINT:CPUlast:%12.0lf%s",
-                        "GPRINT:CPUmin:%10.0lf%s",
-                        "GPRINT:CPUavg:%13.0lf%s",
-                        "GPRINT:CPUmax:%13.0lf%s",
+                        "AREA:umbral90#EA0000:Trafico de carga mayor que 80\\n",
+                        "HRULE:30#00FF50:Umbral 1 - 30%\\n",
+                        "HRULE:40#CA6048:Umbral 1 - 40%\\n",
+                        "HRULE:80#FF0000:Umbral 1 - 80%\\n",
+                        "GPRINT:CPUlast:%12.0lf%s LAST",
+                        "GPRINT:CPUmin:%10.0lf%s MIN",
+                        "GPRINT:CPUavg:%13.0lf%s AVG",
+                        "GPRINT:CPUmax:%13.0lf%s MAX\\n",
+                        "GPRINT:prediccionFIRST: Umbral 80%  @ %c \\n:strftime",
                         "VDEF:m=carga,LSLSLOPE",
                         "VDEF:b=carga,LSLINT",
                         'CDEF:tendencia=carga,POP,m,COUNT,*,b,+',
@@ -140,7 +92,7 @@ def graphRAM(ip):
 
 def graphHDD(ip):
     ultima_lectura = int(rrdtool.last(ip +".rrd"))
-    tiempo_final = ultima_lectura + 3600
+    tiempo_final = ultima_lectura + (3600 * 2)
     tiempo_inicial = ultima_lectura - 3600
 
     ret = rrdtool.graph( ip+"HDD.png",
@@ -152,20 +104,30 @@ def graphHDD(ip):
                         '--vertical-label', "Uso de HDD (%)",
                         '--lower-limit', '0',
                         '--upper-limit', '100',
+                        '--width', '600', 
+                        '--height', '240',
                         "DEF:carga="+ip+".rrd:hddload:AVERAGE",
-                        "AREA:carga#00FF00:Uso de HDD",
+                        "CDEF:umbral90=carga,90,LT,0,carga,IF",
+                        "AREA:carga#00FF00:Uso de HDD\\n",
                         "LINE1:30",
-                        "AREA:5#ff000022:stack",
+                        "AREA:5#ff000022:stack\\n",
                         "VDEF:CPUlast=carga,LAST",
                         "VDEF:CPUmin=carga,MINIMUM",
                         "VDEF:CPUavg=carga,AVERAGE",
                         "VDEF:CPUmax=carga,MAXIMUM",
-
-                        "COMMENT:Now          Min             Avg             Max\n",
-                        "GPRINT:CPUlast:%12.0lf%s",
-                        "GPRINT:CPUmin:%10.0lf%s",
-                        "GPRINT:CPUavg:%13.0lf%s",
-                        "GPRINT:CPUmax:%13.0lf%s",
+                        "AREA:umbral90#EA0000:Trafico de carga mayor que 90\\n",
+                        "CDEF:prediccion=carga,90,100,LIMIT",
+                        "VDEF:prediccionFIRST=prediccion,FIRST",
+                        "VDEF:prediccionLAST=prediccion,LAST",
+                        "HRULE:70#00FF50:Umbral 1 - 70%\\n",
+                        "HRULE:80#CA6048:Umbral 1 - 80%\\n",
+                        "HRULE:90#FF0000:Umbral 1 - 90%\\n",
+                        "GPRINT:CPUlast:%12.0lf%s LAST",
+                        "GPRINT:CPUmin:%10.0lf%s MIN",
+                        "GPRINT:CPUavg:%13.0lf%s AVG",
+                        "GPRINT:CPUmax:%13.0lf%s MAX\\n",
+                        "GPRINT:prediccionFIRST: Umbral 90%  @ %c \\n:strftime",
+                        "GPRINT:prediccionLAST: Umbral 100%  @ %c :strftime",
                         "VDEF:m=carga,LSLSLOPE",
                         "VDEF:b=carga,LSLINT",
                         'CDEF:tendencia=carga,POP,m,COUNT,*,b,+',

@@ -1,10 +1,13 @@
-import requests
+import telebot
 
 class Telegram:
 
     def __init__(self,keybot):
-        self.url = "https://api.telegram.org/bot"+ str(keybot) +"/sendMessage"
+        self.bot = telebot.TeleBot(str(keybot))
     
     def sendMessage(self,message,idChat):
-        session = requests.Session()
-        response = session.post(self.url, data={'chat_id':str(idChat) ,'disable_web_page_preview': '1', 'text': str(message),'parse_mode':'markdown'})
+        self.bot.send_message(str(idChat), str(message))
+    
+    def sendImage(self,image,idChat):
+        photo = open(str(image), 'rb')
+        self.bot.send_photo(str(idChat), photo)

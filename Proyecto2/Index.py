@@ -195,8 +195,9 @@ def graficas():
                 if str(hostname) == "q" or str(hostname) == "Q":
                     break
                 else:
-                    result = pa.verifyHost(str(hostname))
-                    if len(result[0]) == 0:
+                    #result = pa.verifyHost(str(hostname))
+                    result = 1
+                    if result == 0:
                         print("El hostname no existe.")
                         hostname = raw_input("Introduce el hostname del agente: ")
                     else:

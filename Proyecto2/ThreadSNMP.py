@@ -7,6 +7,7 @@ from SNMP import SNMP
 import os
 from PojoAgent import PojoAgent
 from Telegram import Telegram
+from Graph import *
 
 class ThreadSNMP:
     thread = None
@@ -20,13 +21,16 @@ class ThreadSNMP:
         telegram = Telegram("712644612:AAHauTnCsKgno4fOh3z8p9B5fJuOnGC9-tk")
         #telegram.sendMessage(mensaje,"-343597492")
         idChat = "-343597492"
+        umbralRAM = 80
+        umbralHDD = 90
+        umbralCPU = 6
         while True:
             try:
                 if mainPojo.ifWindows(ip):
                     if os.system("ping -c 1 " + str(ip) +" >/dev/null 2>&1 < /dev/null &") == 0 and mainPojo.getStatus(str(ip)) == "up" and len(str(mainPojo.getStatus(str(ip)))) > 0:
                         indexRAM = mainPojo.getIndexRAM(str(ip))
                         indexHDD = mainPojo.getIndexHDD(str(ip))
-                        cpuload = snmp.get(community,version_snmp,ip,port_snmp,"1.3.6.1.2.1.25.3.3.1.2."+ str(indexCPU)) #OID para calcular promedio del ultimo minuto del porcentaje que el procesador no estuvo inactivo
+                        cpuload = snmp.get(community,version_snmp,ip,port_snmp,"1.3.6.1.2.1.25.3.3.1.2."+str(indexCPU)) #OID para calcular promedio del ultimo minuto del porcentaje que el procesador no estuvo inactivo
                         freeram = int(snmp.get(community,version_snmp,ip,port_snmp,"1.3.6.1.2.1.25.2.3.1.6."+ str(indexRAM))) #OID para obtener la memoria RAM disponible en kB
                         usehdd = int(snmp.get(community,version_snmp,ip,port_snmp,"1.3.6.1.2.1.25.2.3.1.6."+ str(indexHDD))) #OID para obtener la cantidad de Disco Duro usado.
                         totalram = int(snmp.get(community,version_snmp,ip,port_snmp,"1.3.6.1.2.1.25.2.3.1.5."+ str(indexRAM))) #OID para obtener el total de la RAM
@@ -35,23 +39,29 @@ class ThreadSNMP:
                         ramload = ((totalram - freeram) * 100)/totalram #Cantidad de RAM en porcentaje
                         mainDBRRD.insert(cpuload,ramload,hddload)
                         #######Establecer umbrales#######
-                        if int(ramload) > 50:
-                            mensaje = "Porcentaje de *RAM* utilizada por el Host "+ str(ip) +": *"+ str(ramload) + " %* ("+ str(time.strftime("%c")) +")"
+                        if int(ramload) > umbralRAM:
+                            graphRAM(ip)
+                            mensaje = "Porcentaje de RAM utilizada por el Host "+ str(ip) +": "+ str(ramload) + " % ("+ str(time.strftime("%c")) +")"
                             telegram.sendMessage(mensaje,idChat)
-                        if int(hddload) > 50:
-                            mensaje = "Porcentaje de *HDD* utilizado por el Host "+ str(ip) +": *"+ str(hddload) + " %* ("+ str(time.strftime("%c")) +")"
+                            telegram.sendImage(str(ip)+"RAM.png",idChat)
+                        if int(hddload) > umbralHDD:
+                            graphHDD(ip)
+                            mensaje = "Porcentaje de HDD utilizado por el Host "+ str(ip) +": "+ str(hddload) + " % ("+ str(time.strftime("%c")) +")"
                             telegram.sendMessage(mensaje,idChat)
-                        if int(cpuload) > 50:
-                            mensaje = "Porcentaje de *CPU* utilizado por el Hots "+ str(ip) +": *"+ str(cpuload) + " %* ("+ str(time.strftime("%c")) +")"
+                            telegram.sendImage(str(ip)+"HDD.png",idChat)
+                        if int(cpuload) > umbralCPU:
+                            graphCPU(ip)
+                            mensaje = "Porcentaje de CPU utilizado por el Hots "+ str(ip) +": "+ str(cpuload) + " % ("+ str(time.strftime("%c")) +")"
                             telegram.sendMessage(mensaje,idChat)
-                        time.sleep(1)
+                            telegram.sendImage(str(ip)+"CPU.png",idChat)
+                        time.sleep(5)
                     else:
                         mainPojo.setStatus(str(hostname),"down")
                         print("Server is down")
                         break
                 else:
                     if os.system("ping -c 1 " + str(ip) +" >/dev/null 2>&1 < /dev/null &") == 0 and mainPojo.getStatus(str(ip)) == "up" and len(str(mainPojo.getStatus(str(ip)))) > 0:
-                        cpuload = snmp.get(community,version_snmp,ip,port_snmp,"1.3.6.1.2.1.25.3.3.1.2."+ str(indexCPU)) #OID para calcular promedio del ultimo minuto del porcentaje que el procesador no estuvo inactivo
+                        cpuload = snmp.get(community,version_snmp,ip,port_snmp,"1.3.6.1.2.1.25.3.3.1.2."+str(indexCPU)) #OID para calcular promedio del ultimo minuto del porcentaje que el procesador no estuvo inactivo
                         freeram = int(snmp.get(community,version_snmp,ip,port_snmp,"1.3.6.1.4.1.2021.4.6.0")) #OID para obtener la memoria RAM disponible en kB
                         usehdd = int(snmp.get(community,version_snmp,ip,port_snmp,"1.3.6.1.4.1.2021.9.1.8.1")) #OID para obtener la cantidad de Disco Duro usado. En linux agregar disk / 1 en snmpd.conf
                         totalram = int(snmp.get(community,version_snmp,ip,port_snmp,"1.3.6.1.2.1.25.2.2.0")) #OID para obtener el total de la RAM
@@ -60,26 +70,33 @@ class ThreadSNMP:
                         ramload = ((totalram - freeram) * 100)/totalram #Cantidad de RAM en porcentaje
                         mainDBRRD.insert(cpuload,ramload,hddload)
                         #######Establecer umbrales#######
-                        if int(ramload) > 50:
-                            mensaje = "Porcentaje de *RAM* utilizada por el Host "+ str(ip) +": *"+ str(ramload) + " %* ("+ str(time.strftime("%c")) +")"
+                        if int(ramload) > umbralRAM:
+                            graphRAM(ip)
+                            mensaje = "Porcentaje de RAM utilizada por el Host "+ str(ip) +": "+ str(ramload) + " % ("+ str(time.strftime("%c")) +")"
                             telegram.sendMessage(mensaje,idChat)
-                        if int(hddload) > 50:
-                            mensaje = "Porcentaje de *HDD* utilizado por el Host "+ str(ip) +": *"+ str(hddload) + " %* ("+ str(time.strftime("%c")) +")"
+                            telegram.sendImage(str(ip)+"RAM.png",idChat)
+                        if int(hddload) > umbralHDD:
+                            graphHDD(ip)
+                            mensaje = "Porcentaje de HDD utilizado por el Host "+ str(ip) +": "+ str(hddload) + " % ("+ str(time.strftime("%c")) +")"
                             telegram.sendMessage(mensaje,idChat)
-                        if int(cpuload) > 50:
-                            mensaje = "Porcentaje de *CPU* utilizado por el Hots "+ str(ip) +": *"+ str(cpuload) + " %* ("+ str(time.strftime("%c")) +")"
+                            telegram.sendImage(str(ip)+"HDD.png",idChat)
+                        if int(cpuload) > umbralCPU:
+                            graphCPU(ip)
+                            mensaje = "Porcentaje de CPU utilizado por el Hots "+ str(ip) +": "+ str(cpuload) + " % ("+ str(time.strftime("%c")) +")"
                             telegram.sendMessage(mensaje,idChat)
-                        time.sleep(1)
+                            telegram.sendImage(str(ip)+"CPU.png",idChat)
+                        time.sleep(5)
                     else:
                         mainPojo.setStatus(str(hostname),"down")
                         print("Server is down")
                         break
-            except:
+            except Exception as e:
                 pa = PojoAgent("localhost","root","","snmp")
                 result = pa.verifyHost(str(ip))
                 if len(result) == 0:
                     break
                 else:
+                    print(e)
                     print("Ocurrio un error")
                 #print("Unexpected error:"+ str(sys.exc_info()[0]))
 

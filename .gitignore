@@ -1,4 +1,6 @@
-.pyc
+*.pyc
+.DS_STORE
+.gitignore
 __pycache__/
 *$py.class
 

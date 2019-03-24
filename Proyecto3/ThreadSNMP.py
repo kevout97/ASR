@@ -27,7 +27,7 @@ class ThreadSNMP:
                     mainDBRRD.insert(inoctets)
                     fallas = mainDBRRD.check_aberration()
 
-                    #######Notificación de Fallas#######
+                    #######Notificacion de Fallas#######
                     if int(fallas) == 1:
                         graphHW(ip)
                         mensaje = "Falla detectada en el Host :"+ str(ip) +"("+ str(time.strftime("%c")) +")"

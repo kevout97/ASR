@@ -26,10 +26,9 @@ class ThreadSNMP:
                 if os.system("ping -c 1 " + str(ip) +" >/dev/null 2>&1 < /dev/null &") == 0 and mainPojo.getStatus(str(ip)) == "up" and len(str(mainPojo.getStatus(str(ip)))) > 0:
                     inoctets = int(snmp.get(community,version_snmp,ip,port_snmp,"1.3.6.1.2.1.2.2.1.10.1")) #OID para obtener el total de inoctets
                     mainDBRRD.insert(inoctets)
-                    fallas = mainDBRRD.check_aberration()
-
                     #######Notificacion de Fallas#######
                     try:
+                        fallas = mainDBRRD.check_aberration()
                         if int(fallas) == 1 and flag:
                             flag = False
                             graphHW(ip)

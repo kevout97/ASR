@@ -59,13 +59,13 @@ class ThreadSNMP:
 
     def startMonitoring(self,ip,mainPojo,index,indexCPU):
         if os.path.isfile(str(ip) + ".rrd"):
-            self.dbrrd = DataBaseRRDTOOL(str(ip) + ".rrd")
+            self.dbrrd = DataBaseRRDTOOL(str(ip))
             nameThread = ip + "thread"
             self.thread = threading.Thread(target=self.monitoring, name=nameThread,args=(ip,mainPojo,self.dbrrd,index,indexCPU,))
             self.thread.setDaemon(True)
             self.thread.start()
         else:
-            self.dbrrd = DataBaseRRDTOOL(str(ip) + ".rrd")
+            self.dbrrd = DataBaseRRDTOOL(str(ip))
             self.dbrrd.create()
             nameThread = ip + "thread"
             self.thread = threading.Thread(target=self.monitoring, name=nameThread,args=(ip,mainPojo,self.dbrrd,index,indexCPU,))

@@ -6,7 +6,7 @@ from PojoAgent import PojoAgent
 
 def graphHW(ip):
     ultima_lectura = int(rrdtool.last(ip +".rrd"))
-    tiempo_final = ultima_lectura + 3600
+    tiempo_final = ultima_lectura
     tiempo_inicial = ultima_lectura - 3600
 
     # El 86400 es el tiempo en segundos correspondientes a un dia
@@ -17,7 +17,7 @@ def graphHW(ip):
                         "--start",str(tiempo_inicial),
                         "--end",str(tiempo_final),
                         "--vertical-label=Bytes/s",
-                        "--title=Deteccion de comportamiento anomalo, valor de Alpha 0.1 Host: "+str(ip),
+                        "--title=Deteccion de comportamiento anomalo Host: "+str(ip),
                         "--color", "ARROW#009900",
                         '--width', '600', 
                         '--height', '240',

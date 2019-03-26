@@ -7,7 +7,7 @@ class DataBaseRRDTOOL:
         self.name = name
 
     def create(self):
-        ret = rrdtool.create(str(self.name),
+        ret = rrdtool.create(str(self.name)+".rrd",
                      "--start",'N',
                      "--step",'60',
                      "DS:inoctets:COUNTER:600:U:U",
@@ -29,7 +29,7 @@ class DataBaseRRDTOOL:
     
     def insert(self,inoctets):
         query = "N:" + str(inoctets)
-        ret = rrdtool.update(self.name, query)
+        ret = rrdtool.update(str(self.name)+'.rrd', query)
         
         if ret:
             print (rrdtool.error())
@@ -44,26 +44,33 @@ class DataBaseRRDTOOL:
             return True
     
     def check_aberration(self):
-        """ This will check for begin and end of aberration
-            in file. Will return:
-            0 if aberration not found.
-            1 if aberration begins
-            2 if aberration ends
-        """
-        ab_status = 0
+    """ This will check for begin and end of aberration
+        in file. Will return:
+        0 if aberration not found.
+        1 if aberration begins
+        2 if aberration ends
+    """
+    ab_status = 0
 
-        info = rrdtool.info(str(self.name))
-        rrdstep = int(info['step'])
-        lastupdate = info['last_update']
-        previosupdate = str(lastupdate - rrdstep - 1)
-
-        fmin = int(values[2][0])
-        fmax = int(values[2][1])
-        flast = int(values[2][2])
-        # check if failure value had changed.
-        if (fmin != fmax):
-            if (flast == 1):
-                ab_status = 1
-            else:
-                ab_status = 2
-        return ab_status
+    info = rrdtool.info(str(self.name)+'.rrd')
+    rrdstep = int(info['step'])
+    lastupdate = info['last_update']
+    previosupdate = str(lastupdate - rrdstep - 1)
+    graphtmpfile = tempfile.NamedTemporaryFile()
+    # Ready to get FAILURES  from rrdfile
+    # will process failures array values for time of 2 last updates
+    values = rrdtool.graph(graphtmpfile.name+'F',
+                           'DEF:f0=' + str(self.name)+'.rrd:inoctets:FAILURES:start=' + previosupdate + ':end=' + str(lastupdate),
+                           'PRINT:f0:MIN:%1.0lf',
+                           'PRINT:f0:MAX:%1.0lf',
+                           'PRINT:f0:LAST:%1.0lf')
+    fmin = (values[2][0])
+    fmax = (values[2][1])
+    flast = (values[2][2])
+    # check if failure value had changed.
+    if (int(fmin) != int(fmax)):
+        if (int(flast) == 1):
+            ab_status = 1
+        else:
+            ab_status = 2
+    return ab_status

@@ -20,6 +20,7 @@ class ThreadSNMP:
         port_snmp = int(mainPojo.getPortSNMP(str(hostname)))
         telegram = Telegram("712644612:AAHauTnCsKgno4fOh3z8p9B5fJuOnGC9-tk")
         idChat = "-343597492"
+        flag = True
         while True:
             try:
                 if os.system("ping -c 1 " + str(ip) +" >/dev/null 2>&1 < /dev/null &") == 0 and mainPojo.getStatus(str(ip)) == "up" and len(str(mainPojo.getStatus(str(ip)))) > 0:
@@ -28,17 +29,22 @@ class ThreadSNMP:
                     fallas = mainDBRRD.check_aberration()
 
                     #######Notificacion de Fallas#######
-                    if int(fallas) == 1:
-                        graphHW(ip)
-                        mensaje = "Falla detectada en el Host :"+ str(ip) +"("+ str(time.strftime("%c")) +")"
-                        telegram.sendMessage(mensaje,idChat)
-                        telegram.sendImage(str(ip)+"HW.png",idChat)
+                    try:
+                        if int(fallas) == 1 and flag:
+                            flag = False
+                            graphHW(ip)
+                            mensaje = "Falla detectada en el Host :"+ str(ip) +"("+ str(time.strftime("%c")) +")"
+                            telegram.sendMessage(mensaje,idChat)
+                            telegram.sendImage(str(ip)+"HW.png",idChat)
 
-                    if int(fallas) == 2:
-                        graphHW(ip)
-                        mensaje = "La falla en el Host :"+ str(ip) +" ha sido mitigada ("+ str(time.strftime("%c")) +")"
-                        telegram.sendMessage(mensaje,idChat)
-                        telegram.sendImage(str(ip)+"HW.png",idChat)
+                        if int(fallas) == 2 and not flag:
+                            flag = True
+                            graphHW(ip)
+                            mensaje = "La falla en el Host :"+ str(ip) +" ha sido mitigada ("+ str(time.strftime("%c")) +")"
+                            telegram.sendMessage(mensaje,idChat)
+                            telegram.sendImage(str(ip)+"HW.png",idChat)
+                    except Exception as a:
+                        print(a)
                     time.sleep(60)
                 else:
                     mainPojo.setStatus(str(hostname),"down")

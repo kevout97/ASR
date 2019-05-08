@@ -1,7 +1,8 @@
 from fpdf import FPDF, HTMLMixin
+from Rendimiento import Rendimiento
 #sudo pip install pillow
 #sudo pip install fpdf2
-def createPdf():
+def createPdf(rendimiento):
     html = '<h1 align="center">Administracion de Rendimiento</h1>'
     html += '<h3>No. de Equipo: 1</h3>'
     html += '<h3>Integrantes:</h3>'
@@ -178,4 +179,5 @@ def createPdf():
     pdf.add_page()
     pdf.write_html(html)
     pdf.output('ReporteAdministracionRendimiento.pdf', 'F')
-createPdf()
+rendimiento = Rendimiento()
+createPdf(rendimiento)

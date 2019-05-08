@@ -1,4 +1,5 @@
 import dns.resolver
+from time import time
 
 # Instalar el modulo sudo pip install dnspython
 # Un ejemplo para correr el script es: 
@@ -17,26 +18,31 @@ def validate_ip(s):
             return False
     return True
 
-def dnsServer(address,port,domain,petitiones):
+def dnsServer(address,port,domain,requests):
     myResolver = dns.resolver.Resolver()
     myResolver.port = int(port)
     myResolver.nameservers = [str(address)]
     try:
         if validate_ip(str(domain)):
-            for i in range(0,int(petitiones)):
+            start_time = time()
+            for i in range(0,int(requests)):
                 req = '.'.join(reversed(domain.split("."))) + ".in-addr.arpa"
                 myAnswers = myResolver.query(str(req), "PTR")
                 for rdata in myAnswers:
                         print("Ip: " + str(domain) + "\nDomain: " + str(rdata))
+            return time() - start_time
         else:
-            for i in range(0,int(petitiones)):
+            start_time = time()
+            for i in range(0,int(requests)):
                 myAnswers = myResolver.query(str(domain), "A")
                 for rdata in myAnswers:
                         print("Domain: " + str(domain) + "\nIp: " + str(rdata))
+            return time() - start_time
                     
     except Exception as e: 
         print(e)
         print "Query failed"
+        return -1
 
 if __name__ == '__main__':
     from optparse import OptionParser
@@ -47,7 +53,7 @@ if __name__ == '__main__':
                     help="PORT for DNS server")
     parser.add_option("-d", "--domain", dest="domain", default='localhost',
                     help="Domain or IP to consult")
-    parser.add_option("-n", "--number", dest="petitiones", default=1,
-                    help="Number of petitions")
+    parser.add_option("-n", "--number", dest="requests", default=1,
+                    help="Number of requests")
     (options, args) = parser.parse_args()
-    dnsServer(str(options.address), options.port, options.domain, options.petitiones)
+    dnsServer(str(options.address), options.port, options.domain, options.requests)

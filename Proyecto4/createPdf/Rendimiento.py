@@ -68,6 +68,12 @@ class Rendimiento:
     def getResponseFTP(self):
         return self.responseFTP
     
+    def setTimeResponseFTP(self,timeResponseFTP):
+        self.timeResponseFTP = timeResponseFTP
+    
+    def getTimeResponseFTP(self):
+        return self.timeResponseFTP
+    
     def setStatusFTP(self,statusFTP):
         self.statusFTP = statusFTP
     
@@ -92,7 +98,7 @@ class Rendimiento:
     def getStatusDNS(self):
         return self.statusDNS
     
-    def setNumeberConectionsSSH(self,numberConectionsSSH):
+    def setNumberConectionsSSH(self,numberConectionsSSH):
         self.numberConectionsSSH = numberConectionsSSH
     
     def getNumberConectionsSSH(self):
@@ -107,7 +113,7 @@ class Rendimiento:
     def setOutputTraficSSH(self,outputTraficSSH):
         self.outputTraficSSH = outputTraficSSH
     
-    def outputTraficSSH(self):
+    def getOutputTraficSSH(self):
         return self.outputTraficSSH
     
     def setTimeSSH(self,timeSSH):

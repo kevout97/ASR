@@ -121,3 +121,21 @@ class Rendimiento:
     
     def getStatusSSH(self):
         return self.statusSSH
+    
+    def setPathImageRAM(self,pathImageRAM):
+        self.pathImageRAM = pathImageRAM
+    
+    def getPatImageRAM(self):
+        return self.pathImageRAM
+    
+    def setPathImageHDD(self,pathImageHDD):
+        self.pathImageHDD = pathImageHDD
+    
+    def getPathImageHDD(self):
+        return self.pathImageHDD
+    
+    def setPathImageCPU(self,pathImageCPU):
+        self.pathImageCPU = pathImageCPU
+    
+    def getPathImageCPU(self):
+        return self.pathImageCPU

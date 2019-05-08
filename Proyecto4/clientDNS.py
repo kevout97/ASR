@@ -54,6 +54,6 @@ if __name__ == '__main__':
     parser.add_option("-d", "--domain", dest="domain", default='localhost',
                     help="Domain or IP to consult")
     parser.add_option("-n", "--number", dest="requests", default=1,
-                    help="Number of requests")
+                    help="Number of requestsbbb")
     (options, args) = parser.parse_args()
     dnsServer(str(options.address), options.port, options.domain, options.requests)
